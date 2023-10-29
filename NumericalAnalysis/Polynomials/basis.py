@@ -1,4 +1,5 @@
 import numpy as np
+from utils import evaluate, q_evaluate
 
 
 class Polynomial(object):
@@ -57,7 +58,18 @@ class Polynomial(object):
         pass
 
     def __call__(self, x):
-        pass
+        if self._roots is None:
+            return evaluate(self, x)
+        else:
+            return q_evaluate(self, x)
+
+    @property
+    def coe(self):
+        return self._coe
+
+    @property
+    def roots(self):
+        return self._roots
 
     @property
     def derivative(self):
@@ -66,6 +78,13 @@ class Polynomial(object):
     @property
     def degree(self):
         return self._degree
+
+    def is_zero(self):
+        return self._coe[0] == 0
+
+    @classmethod
+    def zero(cls):
+        return Polynomial([0])
 
 
 if __name__ == "__main__":
