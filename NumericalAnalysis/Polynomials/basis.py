@@ -1,5 +1,6 @@
 import numpy as np
-from utils import evaluate, q_evaluate
+import fractions
+from typing import Union
 
 
 class Polynomial(object):
@@ -24,7 +25,7 @@ class Polynomial(object):
         if n == 0 and coe[0] == 0:
             self._degree = -1
         else:
-            self._degree = n - 1
+            self._degree = n
 
     def __repr__(self):
         n = self._degree
@@ -53,6 +54,12 @@ class Polynomial(object):
 
     def __sub__(self, other):
         pass
+
+    def __rmul__(self, other):
+        if isinstance(other, Union[int, float, fractions.Fraction]):
+            return Polynomial(other*self._coe, self._roots)
+        else:
+            return self.__mul__(other)
 
     def __mul__(self, other):
         pass
@@ -87,6 +94,28 @@ class Polynomial(object):
         return Polynomial([0])
 
 
+def evaluate(p: Polynomial, x):
+    coe = p.coe
+    n = p.degree
+    if n <= 0:
+        return coe[0]
+    value = coe[0] * x + coe[1]
+    for k in range(2, n+1):
+        value = value * x + coe[k]
+    return value
+
+
+def q_evaluate(p: Polynomial, x):
+    roots = p.roots
+    coe = p.coe
+    if x in roots:
+        return 0
+    value = coe[0]
+    for root in roots:
+        value *= (x - root)
+    return value
+
+
 if __name__ == "__main__":
-    p = Polynomial([1, 2, 3])
-    print(p)
+    poly = Polynomial([1, 0, 3])
+    print(fractions.Fraction(1, 2)*poly)
